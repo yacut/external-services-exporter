@@ -1,0 +1,34 @@
+{
+  "name": "external-services-exporter",
+  "version": "1.0.0",
+  "description": "Prometheus exporter for k8s external services metrics",
+  "main": "index.js",
+  "repository": "git@github.com:yacut/external-services-exporter.git",
+  "author": "yacut",
+  "license": "MIT",
+  "scripts": {
+    "start": "node build/index.js",
+    "start-ts": "ts-node src/index.ts",
+    "predebug": "npm run compile",
+    "debug": "node --inspect=5858 build/index.js",
+    "clean": "rm -rf build",
+    "build": "npm run compile",
+    "precompile": "npm run clean",
+    "compile": "tsc --pretty",
+    "test": "npm run compile && NODE_ENV=test nyc _mocha --exit --timeout 10000 && nyc check-coverage",
+    "lint": "tslint -p . --type-check",
+    "lint-fix": "tslint -p . --type-check --fix"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "kubernetes-client": "^5.2.0",
+    "prom-client": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.11.1",
+    "@types/node": "^9.6.2",
+    "ts-node": "^5.0.1",
+    "tslint": "^5.9.1",
+    "typescript": "^2.8.1"
+  }
+}
