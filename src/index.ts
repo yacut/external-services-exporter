@@ -4,7 +4,10 @@ const express = require("express");
 const { collectDefaultMetrics, Gauge, register } = require("prom-client");
 const Client = require("kubernetes-client").Client;
 const config = require("kubernetes-client").config;
-const client = new Client({ config: config.fromKubeconfig(), version: process.env.K8S_VERSION || "1.9" });
+const client = new Client({ 
+    config: process.env.LOCAL_CONFIG ? config.fromKubeconfig() : config.getInCluster(), 
+    version: process.env.K8S_VERSION || "1.9" 
+});
 
 const app = express();
 const port = process.env.PORT || 5000;
