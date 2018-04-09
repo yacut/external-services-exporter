@@ -30,10 +30,12 @@ const k8sMetricsInterval = setInterval(async () => {
                     services.body.items.forEach((service: any) => {
                         const name = service.metadata.name;
                         const type = service.spec.type;
-                        const external_ip = service.status.loadBalancer.ingress ? service.status.loadBalancer.ingress[0].ip : ""
-                        const ip_filter = service.spec.loadBalancerSourceRanges ? service.spec.loadBalancerSourceRanges.join(",") : "";
-                        const port = service.spec.ports ? service.spec.ports.map((p: any) => p.port).join(",") : "";
-                        gauge.labels(name, namespace, external_ip, type, ip_filter, port).set(1);
+                        if (type === "LoadBalancer") {
+                            const external_ip = service.status.loadBalancer.ingress ? service.status.loadBalancer.ingress[0].ip : ""
+                            const ip_filter = service.spec.loadBalancerSourceRanges ? service.spec.loadBalancerSourceRanges.join(",") : "";
+                            const port = service.spec.ports ? service.spec.ports.map((p: any) => p.port).join(",") : "";
+                            gauge.labels(name, namespace, external_ip, type, ip_filter, port).set(1);
+                        }
                     });
                 }
                 const ingresses = await client.apis.extensions.v1beta1.namespaces(namespace).ingresses.get();
@@ -43,7 +45,7 @@ const k8sMetricsInterval = setInterval(async () => {
                         const external_ip = ingress.status.loadBalancer.ingress ? ingress.status.loadBalancer.ingress[0].ip : ""
                         const ip_filter = ingress.annotations ? ingress.annotations["ingress.kubernetes.io/whitelist-source-range"] : "";
                         const port = "";
-                        gauge.labels(name, namespace, external_ip, "ingress", ip_filter, port).set(1);
+                        gauge.labels(name, namespace, external_ip, "Ingress", ip_filter, port).set(1);
                     });
                 }
             });
