@@ -31,8 +31,12 @@ const k8sMetricsInterval = setInterval(async () => {
                         const name = service.metadata.name;
                         const type = service.spec.type;
                         if (type === "LoadBalancer") {
-                            const external_ip = service.status.loadBalancer.ingress ? service.status.loadBalancer.ingress[0].ip : ""
-                            const ip_filter = service.spec.loadBalancerSourceRanges ? service.spec.loadBalancerSourceRanges.join(",") : "";
+                            const external_ip = service.status.loadBalancer.ingress ? 
+                            service.status.loadBalancer.ingress[0].ip : 
+                            "";
+                            const ip_filter = service.spec.loadBalancerSourceRanges ? 
+                            service.spec.loadBalancerSourceRanges.join(",") : 
+                            "";
                             const port = service.spec.ports ? service.spec.ports.map((p: any) => p.port).join(",") : "";
                             gauge.labels(name, namespace, external_ip, type, ip_filter, port).set(1);
                         }
@@ -42,8 +46,13 @@ const k8sMetricsInterval = setInterval(async () => {
                 if (ingresses.statusCode === 200) {
                     ingresses.body.items.forEach((ingress: any) => {
                         const name = ingress.metadata.name;
-                        const external_ip = ingress.status.loadBalancer.ingress ? ingress.status.loadBalancer.ingress[0].ip : ""
-                        const ip_filter = ingress.metadata.annotations ? ingress.metadata.annotations["ingress.kubernetes.io/whitelist-source-range"] : "";
+                        const external_ip = ingress.status.loadBalancer.ingress ? 
+                            ingress.status.loadBalancer.ingress[0].ip : 
+                            "";
+                        const ip_filter = ingress.metadata.annotations &&
+                            ingress.metadata.annotations["ingress.kubernetes.io/whitelist-source-range"] ? 
+                            ingress.metadata.annotations["ingress.kubernetes.io/whitelist-source-range"] : 
+                            "";
                         const port = ingress.spec.rules && 
                             ingress.spec.rules["0"].http.paths && 
                             ingress.spec.rules["0"].http.paths["0"].backend ? 
