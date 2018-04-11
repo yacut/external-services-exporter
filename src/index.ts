@@ -43,7 +43,7 @@ const k8sMetricsInterval = setInterval(async () => {
                     ingresses.body.items.forEach((ingress: any) => {
                         const name = ingress.metadata.name;
                         const external_ip = ingress.status.loadBalancer.ingress ? ingress.status.loadBalancer.ingress[0].ip : ""
-                        const ip_filter = ingress.matedata.annotations ? ingress.matedata.annotations["ingress.kubernetes.io/whitelist-source-range"] : "";
+                        const ip_filter = ingress.metadata.annotations ? ingress.metadata.annotations["ingress.kubernetes.io/whitelist-source-range"] : "";
                         const port = ingress.spec.rules && 
                             ingress.spec.rules["0"].http.paths && 
                             ingress.spec.rules["0"].http.paths["0"].backend ? 
